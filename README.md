@@ -13,8 +13,8 @@ An Basketball System Overhaul for [Submorse](https://store.steampowered.com/app/
 - **Install** [Bepinex](https://docs.bepinex.dev/articles/user_guide/installation/index.html) To Submorse (Follow The bepinex install Steps)
 - **Start the game to init bepinex.**
 - **Close the game.**
-- Install the Prebuilt Mod Dil (or compile it your self using [Visual Studio](https://visualstudio.microsoft.com/))
-- Put the mod dil in Submorse/bepinex/plugins
+- Install the Prebuilt Mod DLL (or compile it your self using [Visual Studio](https://visualstudio.microsoft.com/))
+- Put the mod DLL in Submorse/bepinex/plugins
 - start game and enjoy:)
 
 ---
