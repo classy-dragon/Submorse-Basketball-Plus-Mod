@@ -1,4 +1,4 @@
-﻿using GlobalConfig;
+using GlobalConfig;
 using HarmonyLib;
 using Submorse.Player;
 using SubmorseBallMod;
@@ -9,6 +9,7 @@ namespace PatcherClass
 {
     public static class Patcher
     {
+        // Player Jump Patch
         [HarmonyPatch(typeof(PlayerMovement), "Update")]
         public class PlayerJumpPatch
         {
@@ -25,6 +26,7 @@ namespace PatcherClass
                 }
             }
         }
+        // Basketball Thrust Controller
         [HarmonyPatch(typeof(BasketBall), "OnPlayerInteract")]
         public class BallThrustPatch
         {
