@@ -100,6 +100,7 @@ namespace SpawnerControllerClass
             if (!Active) return;
             if (Placemode) Spawn(GhostHelper); else Delate(GhostHelper);
         }
+        public bool ReadActive() { return Active; }
         public void SetPlaceMode(bool NewState)
         {
             Placemode = NewState;
@@ -124,36 +125,36 @@ namespace SpawnerControllerClass
         public static float SpawnerSize = 0.5f;
         public static BasketballEditor Editor = new BasketballEditor();
         private static bool Hooked = false;
-        public static void Init()
-        {
-            Editor.TryINIT(SpawnerSize);
-        }
         public static void Run()
         {
+            if (!Hooked)
+            {
+                Hooked = Editor.TryINIT(SpawnerSize);
+            }
             if (ModConfig.HoldingObject)
             {
                 Editor.SetActive(false);
                 return;
             }
-            if (Inputmap.DelateMode())
-            {
-                Editor.TogglePlaceMode();
-                return;
-            }
-            else if (Inputmap.ToggleSpawner())
+            if (Inputmap.ToggleSpawner())
             {
                 Editor.ToggleActive();
                 return;
             }
-            if (Inputmap.Spawn())
+            if (Editor.ReadActive())
             {
-                Editor.Activate();
-                return;
+                if (Inputmap.DelateMode())
+                {
+                    Editor.TogglePlaceMode();
+                    return;
+                }
+                if (Inputmap.Spawn())
+                {
+                    Editor.Activate();
+                    return;
+                }
             }
-            if (!Hooked)
-            {
-                Hooked = Editor.TryINIT(SpawnerSize);
-            }
+            
         }
     }
 }
