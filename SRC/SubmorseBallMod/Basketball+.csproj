@@ -37,6 +37,10 @@
     <Reference Include="Assembly-CSharp">
       <HintPath>..\..\..\Submorse_Data\Managed\Assembly-CSharp.dll</HintPath>
     </Reference>
+    <Reference Include="Assembly-CSharp-firstpass, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\Submorse_Data\Managed\Assembly-CSharp-firstpass.dll</HintPath>
+    </Reference>
     <Reference Include="BepInEx">
       <HintPath>..\..\..\BepInEx\core\BepInEx.dll</HintPath>
     </Reference>
@@ -68,6 +72,7 @@
     <Compile Include="InputHandler\Controls\BallController.cs" />
     <Compile Include="InputHandler\Controls\SpawnerController.cs" />
     <Compile Include="InputHandler\Controls\ThrustController.cs" />
+    <Compile Include="RespawnTrigger.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="ModConfig.cs" />
     <Compile Include="Patcher.cs" />

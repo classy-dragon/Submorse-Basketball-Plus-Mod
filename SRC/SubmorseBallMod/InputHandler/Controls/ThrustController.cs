@@ -22,6 +22,7 @@ namespace BallThrustControllerClass
     {
         public static void Run()
         {
+            if (!ModConfig.HoldingObject) return;
             if (Inputmap.ToggleARC()) {
                 ModConfig.ShowARC = !ModConfig.ShowARC;
                 if (!ModConfig.ShowARC)

@@ -6,6 +6,14 @@ namespace TweaksHelper
 {
     public static class Helper
     {
+        public static void SetColor(GameObject Target,Color NewColor)
+        {
+            if(Target.TryGetComponent<Renderer>(out Renderer OBJRenderer))
+            {
+                OBJRenderer.material.color = NewColor;
+                OBJRenderer.material.SetColor("_Color", NewColor);
+            }
+        }
         public static void SetGravity(GameObject Ball, bool NewState)
         {
             if (!Camera.main) return;

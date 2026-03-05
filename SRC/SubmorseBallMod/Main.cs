@@ -1,15 +1,16 @@
-using BepInEx;
+﻿using BepInEx;
 using ControllerMapClass;
 using GlobalConfig;
+using RespawnTriggerClass;
 
-namespace SubmorseBallMod
+namespace BasketballPlus
 {
     [BepInPlugin("com.classy.submorse", "Basketball+", "1.1.0")]
     public class ballmodmain : BaseUnityPlugin
     {
         void Awake()
         {
-            ModConfig.INIT(gameObject);
+            Startup.INIT(gameObject);
         }
         void Update()
         {

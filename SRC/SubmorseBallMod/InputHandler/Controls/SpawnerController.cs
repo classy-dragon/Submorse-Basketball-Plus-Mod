@@ -1,4 +1,4 @@
-using UnityEngine.InputSystem;
+﻿using UnityEngine.InputSystem;
 using GlobalConfig;
 using UnityEngine;
 using TweaksHelper;
@@ -19,7 +19,7 @@ namespace SpawnerControllerClass
         }
         public static bool DelateMode()
         {
-            return Keyboard.current.nKey.wasPressedThisFrame || Mouse.current.backButton.wasPressedThisFrame;
+            return Keyboard.current.nKey.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame;
         }
     }
     public class BasketballEditor
@@ -69,10 +69,10 @@ namespace SpawnerControllerClass
                     BasketballCopy.SetActive(false);
                     EditorLog.LogMessage("INIT Basketball Object Found!");
                 }
-                //else
-                //{
-                //    EditorLog.LogWarning("Failed INIT Missing Basketball Object.");
-                //}
+                else
+                {
+                    EditorLog.LogWarning("Failed INIT Missing Basketball Object.");
+                }
             }
             return (BasketballCopy && GhostHelper);
         }
@@ -125,12 +125,15 @@ namespace SpawnerControllerClass
         public static float SpawnerSize = 0.5f;
         public static BasketballEditor Editor = new BasketballEditor();
         private static bool Hooked = false;
-        public static void Run()
+        public static void OnInit()
         {
             if (!Hooked)
             {
                 Hooked = Editor.TryINIT(SpawnerSize);
             }
+        }
+        public static void Run()
+        {
             if (ModConfig.HoldingObject)
             {
                 Editor.SetActive(false);

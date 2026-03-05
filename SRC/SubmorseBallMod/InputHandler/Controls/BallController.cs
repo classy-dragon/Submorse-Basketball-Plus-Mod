@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace BallControllerClass
-{ 
+{
     public class Inputmap
     {
         public static bool Grab()
