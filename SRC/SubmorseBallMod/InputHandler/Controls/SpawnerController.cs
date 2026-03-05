@@ -4,7 +4,6 @@ using UnityEngine;
 using TweaksHelper;
 using BLogger = BepInEx.Logging.Logger;
 using BepInEx.Logging;
-using System.CodeDom;
 
 namespace SpawnerControllerClass
 {
@@ -154,7 +153,6 @@ namespace SpawnerControllerClass
             if (!Hooked)
             {
                 Hooked = Editor.TryINIT(SpawnerSize);
-                BepInEx.Logging.Logger.CreateLogSource("e").LogInfo("not hooked");
             }
         }
     }
