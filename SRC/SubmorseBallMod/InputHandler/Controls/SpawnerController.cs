@@ -1,6 +1,10 @@
-﻿using UnityEngine.InputSystem;
+using UnityEngine.InputSystem;
 using GlobalConfig;
 using UnityEngine;
+using TweaksHelper;
+using BLogger = BepInEx.Logging.Logger;
+using BepInEx.Logging;
+using System.CodeDom;
 
 namespace SpawnerControllerClass
 {
@@ -19,66 +23,71 @@ namespace SpawnerControllerClass
             return Keyboard.current.nKey.wasPressedThisFrame || Mouse.current.backButton.wasPressedThisFrame;
         }
     }
-    public static class SpawnerController
+    public class BasketballEditor
     {
-        private static GameObject BallCopy;
-        private static GameObject BallGhost;
-        public static bool SpawnerActive = false;
-        public static bool SpawnerDelateMode = false;
-        public static Color SpawnColor = new Color(0.5f, 0.5f, 0.9f, 0.3f);
-        public static Color DelateColor = new Color(1f, 0.5f, 0.5f, 0.3f);
-        public static float SpawnerSize = 0.5f;
-        private static void SetGhostBallColor(bool DelateMode)
+        GameObject GhostHelper;
+        GameObject BasketballCopy;
+        bool Active = false;
+        bool Placemode = true;
+        ManualLogSource EditorLog = BLogger.CreateLogSource("Basketball+ Editor");
+        private class GhostColors
         {
-            if (BallGhost && BallGhost.TryGetComponent<Renderer>(out Renderer RD))
+            public static Color Normal = new Color(0.5f, 0.5f, 0.9f, 0.3f);
+            public static Color Delate = new Color(1f, 0.5f, 0.5f, 0.3f);
+        }
+        public bool TryINIT(float SpawnerSize)
+        {
+            if (!GhostHelper || !BasketballCopy)
             {
-                if (DelateMode)
+                return Init(SpawnerSize);
+            }
+            return false;
+        }
+        public bool Init(float SpawnerSize)
+        {
+            if (!GhostHelper)
+            {
+                if (Camera.main)
                 {
-                    RD.material.color = DelateColor;
-                    RD.material.SetColor("_Color",DelateColor);
-                } else
-                {
-                    RD.material.color = SpawnColor;
-                    RD.material.SetColor("_Color", SpawnColor);
+                    GhostHelper = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    var renderer = GhostHelper.GetComponent<MeshRenderer>();
+                    renderer.material.shader = Shader.Find("UI/Default");
+                    GhostHelper.transform.SetParent(Camera.main.transform);
+                    GhostHelper.transform.localPosition = new Vector3(0, 0, 1.5f);
+                    GhostHelper.transform.localScale = new Vector3(SpawnerSize, SpawnerSize, SpawnerSize);
+                    GhostHelper.GetComponent<Collider>().enabled = false;
+                    Helper.SetColor(GhostHelper, GhostColors.Normal);
+                    GhostHelper.SetActive(false);
                 }
             }
-        }
-        public static void Setup()
-        {
-            if (!BallGhost)
+            if (!BasketballCopy)
             {
-                BallGhost = GameObject.CreatePrimitive(PrimitiveType.Sphere);
-                BallGhost.transform.SetParent(Camera.main.transform);
-                BallGhost.transform.localPosition = new Vector3(0, 0, 1.5f);
-                BallGhost.transform.localScale = new Vector3(SpawnerSize, SpawnerSize, SpawnerSize);
-                var renderer = BallGhost.GetComponent<MeshRenderer>();
-                renderer.material.shader = Shader.Find("UI/Default");
-                SetGhostBallColor(false);
-                BallGhost.SetActive(false);
-                BallGhost.GetComponent<Collider>().enabled = false;
+                BasketBall TargetBasketballCOMP = GameObject.FindObjectOfType<BasketBall>();
+                if (TargetBasketballCOMP)
+                {
+                    BasketballCopy = GameObject.Instantiate(TargetBasketballCOMP.gameObject);
+                    BasketballCopy.transform.position = new Vector3(9999, 9999, 9999);
+                    BasketballCopy.SetActive(false);
+                    EditorLog.LogMessage("INIT Basketball Object Found!");
+                }
+                //else
+                //{
+                //    EditorLog.LogWarning("Failed INIT Missing Basketball Object.");
+                //}
             }
-            if (!BallCopy)
-            {
-                BallCopy = GameObject.Instantiate(GameObject.FindObjectOfType<BasketBall>().gameObject);
-                BallCopy.SetActive(false);
-                BallCopy.transform.position = new Vector3(9999, 9999, 9999);
-            }
+            return (BasketballCopy && GhostHelper);
         }
-
-        public static void UPTEditor()
+        private void Spawn(GameObject LocationTarget)
         {
-            if (!BallGhost) Setup();
-            BallGhost.SetActive(SpawnerActive);
+            if (!Active) return;
+            GameObject NewBasketball = GameObject.Instantiate(BasketballCopy).gameObject;
+            NewBasketball.transform.SetPositionAndRotation(LocationTarget.transform.position, LocationTarget.transform.rotation);
+            NewBasketball.SetActive(true);
         }
-        public static void SpawnBall()
+        private void Delate(GameObject LocationTarget)
         {
-            GameObject NewBall = GameObject.Instantiate(BallCopy);
-            NewBall.transform.position = BallGhost.transform.position;
-            NewBall.SetActive(true);
-        }
-        public static void DelateBall()
-        {
-            Collider[] Colliders = Physics.OverlapSphere(BallGhost.transform.position, SpawnerSize);
+            if (!Active) return;
+            Collider[] Colliders = Physics.OverlapSphere(LocationTarget.transform.position, LocationTarget.transform.localScale.y);
             foreach (var Object in Colliders)
             {
                 if (Object.gameObject.GetComponent<BasketBall>())
@@ -87,31 +96,65 @@ namespace SpawnerControllerClass
                 }
             }
         }
+        public void Activate()
+        {
+            if (!Active) return;
+            if (Placemode) Spawn(GhostHelper); else Delate(GhostHelper);
+        }
+        public void SetPlaceMode(bool NewState)
+        {
+            Placemode = NewState;
+            if (NewState) Helper.SetColor(GhostHelper, GhostColors.Normal); else Helper.SetColor(GhostHelper, GhostColors.Delate);
+        }
+        public void TogglePlaceMode()
+        {
+            SetPlaceMode(!Placemode);
+        }
+        public void SetActive(bool NewState)
+        {
+            Active = NewState;
+            GhostHelper.SetActive(NewState);
+        }
+        public void ToggleActive()
+        {
+            SetActive(!Active);
+        }
+    }
+    public static class SpawnerController
+    {
+        public static float SpawnerSize = 0.5f;
+        public static BasketballEditor Editor = new BasketballEditor();
+        private static bool Hooked = false;
+        public static void Init()
+        {
+            Editor.TryINIT(SpawnerSize);
+        }
         public static void Run()
         {
-            if (ModConfig.HoldingObject) return;
+            if (ModConfig.HoldingObject)
+            {
+                Editor.SetActive(false);
+                return;
+            }
             if (Inputmap.DelateMode())
             {
-                SpawnerDelateMode = !SpawnerDelateMode;
-                SetGhostBallColor(SpawnerDelateMode);
+                Editor.TogglePlaceMode();
                 return;
             }
             else if (Inputmap.ToggleSpawner())
             {
-                SpawnerActive = !SpawnerActive;
-                UPTEditor();
+                Editor.ToggleActive();
                 return;
             }
-            if (Inputmap.Spawn() && SpawnerActive)
+            if (Inputmap.Spawn())
             {
-                if (SpawnerDelateMode)
-                {
-                    DelateBall();
-                }
-                else
-                {
-                    SpawnBall();
-                }
+                Editor.Activate();
+                return;
+            }
+            if (!Hooked)
+            {
+                Hooked = Editor.TryINIT(SpawnerSize);
+                BepInEx.Logging.Logger.CreateLogSource("e").LogInfo("not hooked");
             }
         }
     }
