@@ -26,12 +26,21 @@ An Basketball System Overhaul for [Submorse](https://store.steampowered.com/app/
 ---
 
 ## Controls
-- **Enter / Left Click:** Spawner Spawn/Delete Ball / Throw Basketball.
-- **E:** Grab Basketball.
+- **Enter / Left Click:** Throw Basketball.
+- **E:** Pickup Basketball.
 - **T / Right Click:** Toggle Basketball ARC Prediction.
+- **Arrow Keys / Scroll Wheel:** Change Throw Power.
+- **Space:** Player Jump.
+- *Spawner Keybinds:*
 - **M:** Toggle Basketball Spawner.
-- **N:** Toggle Basketball Spawner Delete Mode.
-- **Scroll Wheel:** Change Throw Power.
-- **Space:** Jump.
+- **Enter / Left Click:** Spawn/Delate Basketball.
+- **N / Right Click:** Toggle Basketball Spawner Delete Mode.
 
   ---
+<div align="center">
+  <img src="https://github.com/classy-dragon/Submorse-Basketball-Plus-Mod/blob/main/gitbanner2.png?raw=true" alt="">
+</div>
+
+---
+
+*🎩*
