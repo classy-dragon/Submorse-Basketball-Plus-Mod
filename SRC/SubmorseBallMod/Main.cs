@@ -3,10 +3,10 @@ using ControllerMapClass;
 using GlobalConfig;
 using RespawnTriggerClass;
 
-namespace BasketballPlus
+namespace BasketballPlusClass
 {
     [BepInPlugin("com.classy.submorse", "Basketball+", "1.1.0")]
-    public class ballmodmain : BaseUnityPlugin
+    public class BasketballPlusPlugin : BaseUnityPlugin
     {
         void Awake()
         {
