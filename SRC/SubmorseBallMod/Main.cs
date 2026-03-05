@@ -4,7 +4,7 @@ using GlobalConfig;
 
 namespace SubmorseBallMod
 {
-    [BepInPlugin("com.classy.submorse", "Basketball+", "1.0.0")]
+    [BepInPlugin("com.classy.submorse", "Basketball+", "1.1.0")]
     public class ballmodmain : BaseUnityPlugin
     {
         void Awake()
