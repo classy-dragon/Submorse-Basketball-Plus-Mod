@@ -6,17 +6,9 @@ using UnityEngine;
 namespace BallThrustControllerClass
 {
     public class Inputmap {
-        public static bool Up() {
-            return Keyboard.current.upArrowKey.wasPressedThisFrame || (Mouse.current.scroll.y.ReadValue()>0.1f);
-        }
-        public static bool Down()
-        {
-            return Keyboard.current.downArrowKey.wasPressedThisFrame || (Mouse.current.scroll.y.ReadValue() < -0.1f);
-        }
-        public static bool ToggleARC()
-        {
-            return Mouse.current.rightButton.wasPressedThisFrame || Keyboard.current.tKey.wasPressedThisFrame;
-        }
+        public static bool Up() => Keyboard.current.upArrowKey.wasPressedThisFrame || (Mouse.current.scroll.y.ReadValue()>0.1f);
+        public static bool Down() => Keyboard.current.downArrowKey.wasPressedThisFrame || (Mouse.current.scroll.y.ReadValue() < -0.1f);
+        public static bool ToggleARC() => Mouse.current.rightButton.wasPressedThisFrame || Keyboard.current.tKey.wasPressedThisFrame;
     }
     public static class ThrustController
     {
@@ -27,7 +19,13 @@ namespace BallThrustControllerClass
                 ModConfig.ShowARC = !ModConfig.ShowARC;
                 if (!ModConfig.ShowARC)
                 {
+                    if (ModConfig.ARCLine)
+                    {
                     ModConfig.ARCLine.positionCount = 0;
+                    } else
+                    {
+                        ModConfig.ARCLine = Helper.CreateLine(ModConfig.GameRoot ? ModConfig.GameRoot : ModConfig.HoldingObject.gameObject);
+                    }
                 }
             }
             if (ModConfig.ShowARC && ModConfig.HoldingObject && ModConfig.ARCLine)

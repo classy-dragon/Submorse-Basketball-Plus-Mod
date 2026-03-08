@@ -11,6 +11,7 @@ namespace RespawnTriggerClass
         void Awake()
         {
             Trigger = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            Trigger.name = "Respawn-Trigger";
             Trigger.transform.SetParent(transform);
             Trigger.transform.localScale = TriggerSize;
             Trigger.transform.position = new Vector3(0, -20, 0);

@@ -88,7 +88,7 @@
   <PropertyGroup>
     <PostBuildEvent>taskkill /f /im Submorse.exe /t
 ping 127.0.0.1 -n 3
-del "D:\SteamLibrary\steamapps\common\Submorse\BepInEx\plugins\SubmorseBallMod.dll" /q
+del "D:\SteamLibrary\steamapps\common\Submorse\BepInEx\plugins\BasketballPlus.dll" /q
 copy /Y "$(TargetPath)" "D:\SteamLibrary\steamapps\common\Submorse\BepInEx\plugins\"
 start steam://rungameid/912380</PostBuildEvent>
   </PropertyGroup>

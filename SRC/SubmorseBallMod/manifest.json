@@ -1,6 +1,6 @@
 {
     "name": "basketball_plus_mod",
-    "version_number": "1.1.0",
+    "version_number": "1.1.1",
     "website_url": "https://github.com/yourusername/yourrepo",
     "description": "Basketballs can now be picked up and Thrown. You can spawn/delete basketballs. This mod also adds player jumping!",
     "dependencies": {

@@ -3,6 +3,7 @@ using ControllerMapClass;
 using PatcherClass;
 using RespawnTriggerClass;
 using System;
+using System.Collections.Generic;
 using TweaksHelper;
 using UnityEngine;
 
@@ -24,6 +25,8 @@ namespace GlobalConfig
         {
             ControllerMap.HookOnReadyInputs();
             ModConfig.GameRoot = GameRoot;
+            ModConfig.SpawnerRoot = new GameObject("Spawner");
+            ModConfig.SpawnerRoot.transform.SetParent(GameRoot.transform);
             Patcher.Patch(); // Calls to Ready when game is ready and loaded.
         }
     }
@@ -36,5 +39,7 @@ namespace GlobalConfig
         public static bool ShowARC = false;
         public static LineRenderer ARCLine;
         public static GameObject GameRoot;
+        public static GameObject SpawnerRoot;
+        public static bool Active = true;
     }
 }

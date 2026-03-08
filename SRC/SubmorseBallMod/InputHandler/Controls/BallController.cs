@@ -7,14 +7,8 @@ namespace BallControllerClass
 {
     public class Inputmap
     {
-        public static bool Grab()
-        {
-            return Keyboard.current.eKey.wasPressedThisFrame || Mouse.current.middleButton.wasPressedThisFrame;
-        }
-        public static bool Throw()
-        {
-            return Mouse.current.leftButton.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame;
-        }
+        public static bool Grab() => Keyboard.current.eKey.wasPressedThisFrame || Mouse.current.middleButton.wasPressedThisFrame;
+        public static bool Throw() =>  Mouse.current.leftButton.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame;
     }
     public static class BallController
     {
@@ -34,8 +28,10 @@ namespace BallControllerClass
             Helper.SetGravity(ModConfig.HoldingObject.gameObject, true);
             ModConfig.HoldingObject.OnPlayerInteract(Camera.main.gameObject);
             ModConfig.HoldingObject = null;
-            ModConfig.ARCLine.positionCount = 0;
-            return;
+            if (ModConfig.ARCLine)
+            {
+                ModConfig.ARCLine.positionCount = 0;
+            }
         }
         public static void Run()
         {

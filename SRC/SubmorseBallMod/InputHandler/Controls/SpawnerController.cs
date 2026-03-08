@@ -4,31 +4,28 @@ using UnityEngine;
 using TweaksHelper;
 using BLogger = BepInEx.Logging.Logger;
 using BepInEx.Logging;
+using HarmonyLib;
+using System.Collections.Generic;
 
 namespace SpawnerControllerClass
 {
     public class Inputmap
     {
-        public static bool ToggleSpawner()
-        {
-            return Keyboard.current.mKey.wasPressedThisFrame;
-        }
-        public static bool Spawn()
-        {
-            return Keyboard.current.enterKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame;
-        }
-        public static bool DelateMode()
-        {
-            return Keyboard.current.nKey.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame;
-        }
+        public static bool ToggleSpawner() => Keyboard.current.mKey.wasPressedThisFrame;
+        public static bool Spawn() => Keyboard.current.enterKey.wasPressedThisFrame || Mouse.current.leftButton.wasPressedThisFrame;
+        public static bool DeleteMode() => Keyboard.current.nKey.wasPressedThisFrame || Mouse.current.rightButton.wasPressedThisFrame;
+        public static bool ClearAll() => Keyboard.current.leftCtrlKey.IsPressed() && Keyboard.current.nKey.wasPressedThisFrame;
     }
     public class BasketballEditor
     {
-        GameObject GhostHelper;
-        GameObject BasketballCopy;
+        float InitSizeCache = 1f;
+        List<GameObject> SpawnerCache = new List<GameObject>();
+        bool SpawnedActiveCache;
         bool Active = false;
         bool Placemode = true;
         ManualLogSource EditorLog = BLogger.CreateLogSource("Basketball+ Editor");
+        GameObject GhostHelper;
+        GameObject BasketballCopy;
         private class GhostColors
         {
             public static Color Normal = new Color(0.5f, 0.5f, 0.9f, 0.3f);
@@ -44,11 +41,13 @@ namespace SpawnerControllerClass
         }
         public bool Init(float SpawnerSize)
         {
+            InitSizeCache = SpawnerSize;
             if (!GhostHelper)
             {
                 if (Camera.main)
                 {
                     GhostHelper = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    GameObject.DontDestroyOnLoad(GhostHelper);
                     var renderer = GhostHelper.GetComponent<MeshRenderer>();
                     renderer.material.shader = Shader.Find("UI/Default");
                     GhostHelper.transform.SetParent(Camera.main.transform);
@@ -66,7 +65,9 @@ namespace SpawnerControllerClass
                 {
                     BasketballCopy = GameObject.Instantiate(TargetBasketballCOMP.gameObject);
                     BasketballCopy.transform.position = new Vector3(9999, 9999, 9999);
+                    BasketballCopy.name = "Basketball+ : Main Copy";
                     BasketballCopy.SetActive(false);
+                    BasketballCopy.transform.SetParent(ModConfig.GameRoot ? ModConfig.GameRoot.transform : null);
                     EditorLog.LogMessage("INIT Basketball Object Found!");
                 }
                 else
@@ -79,26 +80,53 @@ namespace SpawnerControllerClass
         private void Spawn(GameObject LocationTarget)
         {
             if (!Active) return;
-            GameObject NewBasketball = GameObject.Instantiate(BasketballCopy).gameObject;
+            if (!BasketballCopy) if (!TryINIT(InitSizeCache)) return;
+            GameObject NewBasketball = GameObject.Instantiate(BasketballCopy, ModConfig.SpawnerRoot ? ModConfig.SpawnerRoot.transform : null).gameObject;
+            NewBasketball.name = "Basketball";
             NewBasketball.transform.SetPositionAndRotation(LocationTarget.transform.position, LocationTarget.transform.rotation);
             NewBasketball.SetActive(true);
+            SpawnerCache.Add(NewBasketball);
         }
-        private void Delate(GameObject LocationTarget)
+        private void Delete(GameObject LocationTarget)
         {
             if (!Active) return;
             Collider[] Colliders = Physics.OverlapSphere(LocationTarget.transform.position, LocationTarget.transform.localScale.y);
             foreach (var Object in Colliders)
             {
-                if (Object.gameObject.GetComponent<BasketBall>())
+                if (Object.name == "Basketball" || Object.gameObject.GetComponent<BasketBall>())
                 {
+                    if (SpawnerCache.Contains(Object.gameObject)) SpawnerCache.Remove(Object.gameObject);
                     GameObject.Destroy(Object.gameObject);
                 }
             }
         }
+        public void SetSpawnedActive(bool NewState)
+        {
+            if (NewState != SpawnedActiveCache)
+            {
+                SpawnerCache.RemoveAll(item => item == null);
+                foreach (GameObject Object in SpawnerCache)
+                {
+                    if (Object) Object.SetActive(NewState);
+                }
+                SpawnedActiveCache = NewState;
+            }
+        }
+        public void ClearSpawned()
+        {
+            foreach (GameObject Object in SpawnerCache)
+            {
+                if (Object) GameObject.Destroy(Object);
+            }
+            SpawnerCache.Clear();
+            EditorLog.LogInfo("Cleared Spawned Objects.");
+        }
         public void Activate()
         {
+            SpawnerCache.RemoveAll(item => item == null);
             if (!Active) return;
-            if (Placemode) Spawn(GhostHelper); else Delate(GhostHelper);
+            if (!GhostHelper) if (!TryINIT(InitSizeCache)) return;
+            if (Placemode) Spawn(GhostHelper); else Delete(GhostHelper);
         }
         public bool ReadActive() { return Active; }
         public void SetPlaceMode(bool NewState)
@@ -113,7 +141,14 @@ namespace SpawnerControllerClass
         public void SetActive(bool NewState)
         {
             Active = NewState;
-            GhostHelper.SetActive(NewState);
+            if (GhostHelper)
+            {
+                GhostHelper.SetActive(NewState);
+            }
+            else
+            {
+                if (Active) TryINIT(InitSizeCache);
+            }
         }
         public void ToggleActive()
         {
@@ -146,7 +181,12 @@ namespace SpawnerControllerClass
             }
             if (Editor.ReadActive())
             {
-                if (Inputmap.DelateMode())
+                if (Inputmap.ClearAll())
+                {
+                    Editor.ClearSpawned();
+                    return;
+                }
+                if (Inputmap.DeleteMode())
                 {
                     Editor.TogglePlaceMode();
                     return;
@@ -157,7 +197,7 @@ namespace SpawnerControllerClass
                     return;
                 }
             }
-            
+
         }
     }
 }
