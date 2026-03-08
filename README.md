@@ -11,9 +11,9 @@ An Basketball System Overhaul for [Submorse](https://store.steampowered.com/app/
 
 ## Install Steps:
 - **Install** [Bepinex](https://docs.bepinex.dev/articles/user_guide/installation/index.html) To Submorse (Follow The bepinex install Steps)
-- **Start the game to init bepinex.**
-- **Close the game.**
-- [Download the latest Prebuilt Mod DLL](https://github.com/classy-dragon/Submorse-Basketball-Plus-Mod/releases)
+- Start the game to init bepinex.
+- Close the game.
+- [Download the latest Prebuilt Mod DLL](https://github.com/classy-dragon/Submorse-Basketball-Plus-Mod/releases) *(Or build it your self)*
 - Put the mod DLL in Submorse/bepinex/plugins
 - start game and enjoy:)
 
@@ -25,13 +25,22 @@ An Basketball System Overhaul for [Submorse](https://store.steampowered.com/app/
 
 ---
 
-## Controls
-- **Enter / Left Click:** Spawner Spawn/Delete Ball / Throw Basketball.
-- **E:** Grab Basketball.
+## Basic Controls
+- **E:** Pickup Basketball.
+- **Enter / Left Click:** Throw Basketball.
 - **T / Right Click:** Toggle Basketball ARC Prediction.
+- **Arrow Keys / Scroll Wheel:** Change Throw Power.
+- **Space:** Player Jump.
+## Spawner Controls:
 - **M:** Toggle Basketball Spawner.
-- **N:** Toggle Basketball Spawner Delete Mode.
-- **Scroll Wheel:** Change Throw Power.
-- **Space:** Jump.
+- **Enter / Left Click:** Spawn/Delate Basketball.
+- **N / Right Click:** Toggle Basketball Spawner Delete Mode.
 
   ---
+<div align="center">
+  <img src="https://github.com/classy-dragon/Submorse-Basketball-Plus-Mod/blob/main/gitbanner2.png?raw=true" alt="">
+</div>
+
+---
+
+*🎩*
