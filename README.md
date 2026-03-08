@@ -35,6 +35,7 @@ An Basketball System Overhaul for [Submorse](https://store.steampowered.com/app/
 - **M:** Toggle Basketball Spawner.
 - **Enter / Left Click:** Spawn/Delate Basketball.
 - **N / Right Click:** Toggle Basketball Spawner Delete Mode.
+- **CTRL + N:** Delate All Spawened Basketballs.
 
   ---
 <div align="center">
